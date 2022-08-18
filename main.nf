@@ -5,7 +5,7 @@ nextflow.enable.dsl=2
 include { fastq_input; bam_input } from "./nevermore/workflows/input"
 include { minimap2_align } from "./nevermore/modules/align/minimap2"
 include { collate_feature_counts } from "./gq_flow/modules/collate"
-include { gffquant } from "./gq_flow/modules/gffquant"
+include { run_gffquant } from "./gq_flow/modules/gffquant"
 
 if (params.input_dir && params.remote_input_dir) {
 	log.info """

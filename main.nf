@@ -73,7 +73,7 @@ workflow {
 	aligned_ch = minimap2_align.out.sam
 		.map { sample, sam ->
 			sample_id = sample.id.replaceAll(/.(orphans|singles|chimeras)$/, "")
-			return tuple(sample_id, bam)
+			return tuple(sample_id, sam)
 		}
 		.groupTuple(sort: true)
 

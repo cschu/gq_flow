@@ -6,7 +6,7 @@ process minimap2_align {
 	path(reference)
 
 	output:
-	tuple val(sample), path("${sample.id}.sam"), emit: sam
+	tuple val(sample), path("${sample.id}/${sample.id}.sam"), emit: sam
 
 	script:
 	def reads = (sample.is_paired) ? "${sample.id}_R1.fastq.gz ${sample.id}_R2.fastq.gz" : "${sample.id}_R1.fastq.gz"

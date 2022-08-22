@@ -83,7 +83,7 @@ workflow {
 
 	run_gffquant(
 		align_ch,
-		params.minimap2_index,
+		params.gq_db,
 		gq_params
 	)
 

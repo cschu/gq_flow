@@ -2,8 +2,8 @@ process run_gffquant {
 	publishDir "${params.output_dir}", mode: params.publish_mode
 
 	input:
-	tuple val(sample), path(bam)
-	path(db)
+	tuple val(sample), path(alignments)
+	path(gq_db)
 	val(gq_params)
 
 	output:
@@ -14,8 +14,8 @@ process run_gffquant {
 	"""
 	mkdir -p logs/
 	echo 'Copying database...'
-	cp -v ${db} gq_db.sqlite3
-	gffquant ${gq_output} ${gq_params} gq_db.sqlite3 - > logs/${sample}.o 2> logs/${sample}.e
+	cp -v ${gq_db} gq_db.sqlite3
+	gffquant ${gq_output} ${gq_params} gq_db.sqlite3 ${alignments} > logs/${sample}.o 2> logs/${sample}.e
 	rm -v gq_db.sqlite3
 	"""
 }

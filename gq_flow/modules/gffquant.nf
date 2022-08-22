@@ -10,7 +10,7 @@ process run_gffquant {
 	tuple val(sample), path("${sample}/*.txt.gz"), emit: results
 
 	script:
-	def gq_output = "-o ${sample.id}/${sample.id}"
+	def gq_output = "-o ${sample}/${sample}"
 	"""
 	mkdir -p logs/
 	echo 'Copying database...'

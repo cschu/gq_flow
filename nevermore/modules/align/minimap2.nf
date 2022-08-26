@@ -36,7 +36,7 @@ process bwa_mem_align {
 	"""
 	mkdir -p ${sample.id}/
 	bwa mem ${bwa_options} \$(readlink ${reference}) ${reads} |\
-		awk -F '\t' -v OFS='\t' 'substr(\$1,1,1) == "@" || \$2 != "4"' > ${sample.id}/${sample.id}.sam
+		awk -F '\t' -v OFS='\t' 'substr(\$1,1,1) == "@" || !and(\$2, 4)' > ${sample.id}/${sample.id}.sam
 	"""
 
 }

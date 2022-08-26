@@ -3,7 +3,7 @@
 nextflow.enable.dsl=2
 
 include { fastq_input; bam_input } from "./nevermore/workflows/input"
-include { minimap2_align } from "./nevermore/modules/align/minimap2"
+include { minimap2_align; bwa_mem_align } from "./nevermore/modules/align/minimap2"
 include { collate_feature_counts } from "./gq_flow/modules/collate"
 include { run_gffquant } from "./gq_flow/modules/gffquant"
 
@@ -26,6 +26,21 @@ def bam_input_pattern = input_dir + "/" + "**.bam"
 def gq_params = "-m ${params.gq_mode} --ambig_mode ${params.gq_ambig_mode}"
 gq_params += (params.gq_strand_specific) ? " --strand_specific" : ""
 gq_params += (params.gq_unmarked_orphans) ? " --unmarked_orphans" : ""
+gq_params += (params.gq_calc_coverage) ? " --calc_coverage" : ""
+
+if (params.minimap2_index && params.bwa_mem_index) {
+	log.info """
+	Please only specify one index (--bwa_mem_index or --minimap2_index).
+	""".stripIndent()
+	exit 1
+} else if (!params.minimap2_index && !params.bwa_mem_index) {
+	log.info """
+	Neither --bwa_mem_index nor --minimap2_index specified.
+	""".stripIndent()
+	exit 1
+}
+
+
 
 
 process merge_samfiles {
@@ -65,12 +80,29 @@ workflow {
 		Channel.fromPath(bam_input_pattern)
 	)*/
 
-	minimap2_align(
-		fastq_ch,
-		params.minimap2_index
-	)
+	aligned_ch = Channel.empty()
+
+	if (params.minimap2_index) {
+
+		minimap2_align(
+			fastq_ch,
+			params.minimap2_index
+		)
+
+		aligned_ch = minimap2_align.out.sam
 	
-	aligned_ch = minimap2_align.out.sam
+	} else if (params.bwa_mem_index) {
+
+		bwa_mem_align(
+			fastq_ch,
+			params.bwa_mem_index
+		)
+
+		aligned_ch = bwa_mem_align.out.sam
+
+	}
+
+	aligned_ch = aligned_ch
 		.map { sample, sam ->
 			sample_id = sample.id.replaceAll(/.(orphans|singles|chimeras)$/, "")
 			return tuple(sample_id, sam)

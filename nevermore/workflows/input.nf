@@ -3,6 +3,9 @@ nextflow.enable.dsl=2
 include { classify_sample } from "../modules/functions"
 
 
+def bam_suffix_pattern = params.bam_input_pattern.replaceAll(/\*/, "")
+
+
 process transfer_fastqs {
 	input:
 		path(fastqs)
@@ -90,7 +93,7 @@ workflow bam_input {
 		transfer_bams.out.bamfiles.view()
 		bam_ch = transfer_bams.out.bamfiles.flatten()
 			.map { file ->
-				def sample = file.name.replaceAll(/.bam$/, "")
+				def sample = file.name.replaceAll(suffix_pattern, "").replaceAll(/\.$/, "")
 				return tuple(sample, file)
 			}
 			.groupTuple(sort: true)

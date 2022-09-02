@@ -56,7 +56,7 @@ process run_gffquant_bam {
 	"""
 	mkdir -p logs/
 	echo 'Copying database...'
-	cp -v ${db} gq_db.sqlite3
+	cp -v ${gq_db} gq_db.sqlite3
 	${gq_cmd} ${gq_logs} > logs/${sample}.o 2> logs/${sample}.e
 	rm -v gq_db.sqlite3
 	"""

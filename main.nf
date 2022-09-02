@@ -83,10 +83,9 @@ workflow process_bam_data {
 
 		aligned_ch = aligned_ch
 			.map { sample, bam ->
-				return tuple(sample.id, bam)
+				return tuple(sample.id, bam[0])
 			}
 			.groupTuple(sort: true)
-
 
 		run_gffquant_bam(
 			aligned_ch,

@@ -60,6 +60,16 @@ workflow remote_fastq_input {
 		fastqs = res_ch
 }
 
+workflow remote_bam_input {
+	take:
+		bam_ch
+	main:
+		transfer_bams(bam_ch)
+		res_ch = transfer_bams.out.bamfiles.flatten()
+	emit:
+		bamfiles = res_ch
+}
+
 
 workflow fastq_input {
 	take:
@@ -92,9 +102,14 @@ workflow bam_input {
 	take:
 		bam_ch
 	main:
-		transfer_bams(bam_ch.collect())
-		transfer_bams.out.bamfiles.view()
-		bam_ch = transfer_bams.out.bamfiles.flatten()
+
+		if (params.remote_input_dir) {
+			bam_ch = remote_bam_input(bam_ch.collect())
+		}
+		// transfer_bams(bam_ch.collect())
+		// transfer_bams.out.bamfiles.view()
+		//bam_ch = transfer_bams.out.bamfiles.flatten()
+		bam_ch = bam_ch
 			.map { file ->
 				def sample = file.name.replaceAll(suffix_pattern, "").replaceAll(/\.$/, "")
 				return tuple(sample, file)

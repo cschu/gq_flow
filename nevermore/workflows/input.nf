@@ -111,7 +111,7 @@ workflow bam_input {
 		//bam_ch = transfer_bams.out.bamfiles.flatten()
 		bam_ch = bam_ch
 			.map { file ->
-				def sample = file.name.replaceAll(suffix_pattern, "").replaceAll(/\.$/, "")
+				def sample = file.name.replaceAll(bam_suffix_pattern, "").replaceAll(/\.$/, "")
 				return tuple(sample, file)
 			}
 			.groupTuple(sort: true)

@@ -80,6 +80,14 @@ workflow process_bam_data {
 	take:
 		aligned_ch
 	main:
+
+		aligned_ch = aligned_ch
+			.map { sample, bam ->
+				return tuple(sample.id, bam)
+			}
+			.groupTuple(sort: true)
+
+
 		run_gffquant_bam(
 			aligned_ch,
 			params.gq_db,

@@ -14,7 +14,7 @@ process run_gffquant_sam {
 	def gq_cmd = "gffquant ${gq_output} ${gq_params} gq_db.sqlite3"
 
 	def mk_aln_sam = ""
-	if (samfiles instanceof Collection && samfiles.size() >= 2) {
+	if (alignments instanceof Collection && alignments.size() >= 2) {
 		mk_aln_sam = "cat ${sample}.sam > alignments.sam \n"
 		mk_aln_sam += "grep -v '^@' ${sample}.singles.sam >> alignments.sam"
 	} else {

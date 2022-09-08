@@ -88,7 +88,7 @@ workflow fastq_input {
 			}
 			.groupTuple(sort: true)
 
-		prepare_fastqs(fastq_ch, params.remote_input_dir)
+		prepare_fastqs(fastq_ch.collect(), params.remote_input_dir)
 
 		fastq_ch = prepare_fastqs.out.paired
 			.concat(prepare_fastqs.out.single)

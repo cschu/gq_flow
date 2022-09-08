@@ -37,14 +37,15 @@ process prepare_fastqs {
 
 	input:
 		tuple val(sample_id), path(files)
+		val(remote_input)
 	output:
 		tuple val(sample_id), path("${sample_id}/*.fastq.gz"), emit: paired, optional: true
 		tuple val("${sample_id}.singles"), path("${sample_id}.singles/*.fastq.gz"), emit: single, optional: true
     script:
+		def remote_option = (remote_input) ? "--remote-input" : ""
 		"""
-		prepare_fastqs.py -i . -o . -s ${sample_id} --remove-suffix ${params.suffix_pattern} > run.sh
-     	bash run.sh
-        """
+		prepare_fastqs.py -i . -o . ${remote_option} --remove-suffix ${params.suffix_pattern} > run.sh
+     	"""
 }
 
 workflow remote_fastq_input {
@@ -76,9 +77,9 @@ workflow fastq_input {
 		fastq_ch
 	
 	main:
-		if (params.remote_input_dir) {
-			fastq_ch = remote_fastq_input(fastq_ch)
-		}
+		// if (params.remote_input_dir) {
+		// 	fastq_ch = remote_fastq_input(fastq_ch)
+		// }
 
 		fastq_ch = fastq_ch
 			.map { file ->
@@ -87,7 +88,7 @@ workflow fastq_input {
 			}
 			.groupTuple(sort: true)
 
-		prepare_fastqs(fastq_ch)
+		prepare_fastqs(fastq_ch, params.remote_input_dir)
 
 		fastq_ch = prepare_fastqs.out.paired
 			.concat(prepare_fastqs.out.single)

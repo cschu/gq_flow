@@ -36,7 +36,7 @@ process prepare_fastqs {
 	publishDir params.output_dir, mode: "${params.publish_mode}"
 
 	input:
-		tuple val(sample_id), path(files)
+		path(files)
 		val(remote_input)
 	output:
 		tuple val(sample_id), path("${sample_id}/*.fastq.gz"), emit: paired, optional: true

@@ -81,15 +81,16 @@ workflow fastq_input {
 		// 	fastq_ch = remote_fastq_input(fastq_ch)
 		// }
 
-		fastq_ch = fastq_ch
-			.map { file ->
-    			def sample = file.getParent().getName()
-				return tuple(sample, file)
-			}
-			.groupTuple(sort: true)
+		// fastq_ch = fastq_ch
+		// 	.map { file ->
+    	// 		def sample = file.getParent().getName()
+		// 		return tuple(sample, file)
+		// 	}
+		// 	.groupTuple(sort: true)
+		fastq_ch.view()
 
 		prepare_fastqs(fastq_ch.collect(), params.remote_input_dir)
-
+	
 		fastq_ch = prepare_fastqs.out.paired
 			.concat(prepare_fastqs.out.single)
 			.map { classify_sample(it[0], it[1]) } 

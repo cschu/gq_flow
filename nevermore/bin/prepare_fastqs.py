@@ -113,11 +113,11 @@ def process_sample(sample, fastqs, output_dir, remove_suffix=None, remote_input=
 		
 
 def is_fastq(f):
-	_, suffix = os.path.splitext(f)
+	prefix, suffix = os.path.splitext(f)
 	if suffix in ("fastq", "fq"):
 		return True
 	if suffix == ".gz":
-		_, suffix = os.path.splitext()
+		_, suffix = os.path.splitext(prefix)
 		return suffix in ("fastq", "fq")
 	return False
 

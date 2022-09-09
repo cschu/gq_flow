@@ -85,7 +85,7 @@ def process_sample(sample, fastqs, output_dir, remove_suffix=None, remote_input=
 
 		r1 = [(p, f) for p, f in zip(prefixes, fastqs) if p.endswith("1")]
 		r2 = [(p, f) for p, f in zip(prefixes, fastqs) if p.endswith("2")]
-		others = set(fastqs).difference({f for _, f in r1}).difference({f for _, f in r2})
+		others = list(set(fastqs).difference({f for _, f in r1}).difference({f for _, f in r2}))
 
 		assert len(r2) == 0 or len(r1) == len(r2), "R1/R2 sets are not of the same length"
 		check_pairwise(r1, r2)

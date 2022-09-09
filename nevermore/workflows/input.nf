@@ -44,8 +44,10 @@ process prepare_fastqs {
 		//tuple val("${sample_id}.singles"), path("${sample_id}.singles/*.fastq.gz"), emit: single, optional: true
     script:
 		def remote_option = (remote_input) ? "--remote-input" : ""
+		def remove_suffix = (params.suffix_pattern) ? "--remove-suffix ${params.suffix_pattern}" : ""
 		"""
-		prepare_fastqs.py -i . -o . ${remote_option} --remove-suffix ${params.suffix_pattern} > run.sh
+		mkdir -p fastq/
+		prepare_fastqs.py -i . -o fastq/ ${remote_option} ${remove_suffix} > run.sh
      	"""
 }
 

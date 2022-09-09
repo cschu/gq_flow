@@ -114,11 +114,11 @@ def process_sample(sample, fastqs, output_dir, remove_suffix=None, remote_input=
 
 def is_fastq(f):
 	prefix, suffix = os.path.splitext(f)
-	if suffix in ("fastq", "fq"):
+	if suffix in (".fastq", ".fq"):
 		return True
 	if suffix == ".gz":
 		_, suffix = os.path.splitext(prefix)
-		return suffix in ("fastq", "fq")
+		return suffix in (".fastq", ".fq")
 	return False
 
 
@@ -138,7 +138,7 @@ def main():
 		for f in os.listdir(args.input_dir)
 		if is_fastq(f)
 	)
-	assert fastqs, f"Could not find any fastq files in {args.input_dir}."
+	assert fastqs, f"Could not find any fastq files in '{args.input_dir}'."
 
 	samples = {}
 

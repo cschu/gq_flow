@@ -100,6 +100,7 @@ workflow fastq_input {
 		// 	.concat(prepare_fastqs.out.single)
 		// 	.map { classify_sample(it[0], it[1]) } 
 		fastq_ch = prepare_fastqs.out.fastqs
+			.flatten()
 			.map { file -> 
 				def sample = file.getParent().getName()
 				return tuple(sample, file)

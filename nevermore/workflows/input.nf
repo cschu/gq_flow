@@ -93,6 +93,8 @@ workflow fastq_input {
 		fastq_ch.view()
 
 		prepare_fastqs(fastq_ch.collect(), params.remote_input_dir)
+
+		prepare_fastqs.out.fastqs.view()
 	
 		// fastq_ch = prepare_fastqs.out.paired
 		// 	.concat(prepare_fastqs.out.single)

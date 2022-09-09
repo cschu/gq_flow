@@ -158,7 +158,7 @@ def main():
 				remove_suffix=args.remove_suffix, remote_input=args.remote_input
 			)
 		except Exception as e:
-			raise ValueError(f"Encountered problems processing sample '{args.sample_id}': {e}.\nPlease check your file names.")
+			raise ValueError(f"Encountered problems processing sample '{sample}': {e}.\nPlease check your file names.")
 
 
 if __name__ == "__main__":

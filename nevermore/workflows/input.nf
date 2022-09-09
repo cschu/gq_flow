@@ -39,8 +39,9 @@ process prepare_fastqs {
 		path(files)
 		val(remote_input)
 	output:
-		tuple val(sample_id), path("${sample_id}/*.fastq.gz"), emit: paired, optional: true
-		tuple val("${sample_id}.singles"), path("${sample_id}.singles/*.fastq.gz"), emit: single, optional: true
+		path("fastq/*/*.fastq.gz"), emit: fastqs
+		//tuple val(sample_id), path("${sample_id}/*.fastq.gz"), emit: paired, optional: true
+		//tuple val("${sample_id}.singles"), path("${sample_id}.singles/*.fastq.gz"), emit: single, optional: true
     script:
 		def remote_option = (remote_input) ? "--remote-input" : ""
 		"""
@@ -91,9 +92,17 @@ workflow fastq_input {
 
 		prepare_fastqs(fastq_ch.collect(), params.remote_input_dir)
 	
-		fastq_ch = prepare_fastqs.out.paired
-			.concat(prepare_fastqs.out.single)
-			.map { classify_sample(it[0], it[1]) } 
+		// fastq_ch = prepare_fastqs.out.paired
+		// 	.concat(prepare_fastqs.out.single)
+		// 	.map { classify_sample(it[0], it[1]) } 
+		fastq_ch = prepare_fastqs.out.fastqs
+			.map { file -> 
+				def sample = file.getParent().getName()
+				return tuple(sample, file)
+			}.groupTuple(sort: true)
+			.map { classify_sample(it[0], it[1]) }
+		
+		fastq_ch.view()
 
 
 	emit:

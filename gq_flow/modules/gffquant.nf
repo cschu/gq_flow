@@ -22,6 +22,7 @@ process run_gffquant_sam {
 	}
 
 	"""
+	set -e -o pipefail
 	mkdir -p logs/
 	echo 'Copying database...'
 	cp -v ${gq_db} gq_db.sqlite3
@@ -48,16 +49,18 @@ process run_gffquant_bam {
 	def gq_cmd = "gffquant --format bam ${gq_output} ${gq_params} gq_db.sqlite3"
 
 	if (params.do_name_sort) {
-		gq_cmd = "samtools collate -O ${alignments} -@ ${task.cpus} | ${gq_cmd} -"
+		gq_cmd = "samtools collate -@ ${task.cpus} -O ${alignments} tmp/collated_bam | ${gq_cmd} -"
 	} else {
 		gq_cmd = "${gq_cmd} ${alignments}"
 	}
 
 	"""
-	mkdir -p logs/
+	set -e -o pipefail
+	mkdir -p logs/ tmp/
 	echo 'Copying database...'
 	cp -v ${gq_db} gq_db.sqlite3
 	${gq_cmd} > logs/${sample}.o 2> logs/${sample}.e
+	rm -rf tmp/
 	rm -v gq_db.sqlite3
 	"""
 }

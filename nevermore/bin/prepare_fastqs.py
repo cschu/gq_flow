@@ -159,7 +159,7 @@ def process_sample(sample, fastqs, output_dir, remove_suffix=None, remote_input=
 		
 
 def is_fastq(f):
-	""" Checks if a file is a fastq file (compressed or uncompressed.
+	""" Checks if a file is a fastq file (compressed or uncompressed.)
 
 	Input:
 	 - filename

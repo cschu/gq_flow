@@ -159,33 +159,36 @@ workflow {
 		feature_count_ch = feature_count_ch
 			.concat(process_bam_data.out.feature_counts)
 
-	} else if (params.minimap2_index || params.bwa_mem_index) {
+	} else if (params.test_transfer || params.minimap2_index || params.bwa_mem_index) {
 		fastq_input(
 			Channel.fromPath(fastq_input_pattern)
 		)
 
 		fastq_ch = fastq_input.out.fastqs
 
-		process_fastq_data(fastq_ch)
-
+		if (!params.test_transfer) {
+			process_fastq_data(fastq_ch)
+		
 		feature_count_ch = feature_count_ch
 			.concat(process_fastq_data.out.feature_counts)
-
+		}
 	}
 
-	feature_count_ch = feature_count_ch
-		.map { sample, files -> return files }
-		.flatten()
-		.map { file ->
-			def category = file.name
-				.replaceAll(/\.txt$/, "")
-				.replaceAll(/.+\./, "")
-			return tuple(category, file)
-		}
-		.groupTuple(sort: true)
+	if (!params.test_transfer) {
+		feature_count_ch = feature_count_ch
+			.map { sample, files -> return files }
+			.flatten()
+			.map { file ->
+				def category = file.name
+					.replaceAll(/\.txt$/, "")
+					.replaceAll(/.+\./, "")
+				return tuple(category, file)
+			}
+			.groupTuple(sort: true)
 
-	if (!params.no_collate) {
-		collate_feature_counts(feature_count_ch)
+		if (!params.no_collate) {
+			collate_feature_counts(feature_count_ch)
+		}
 	}
 
 	/*

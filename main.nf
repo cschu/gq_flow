@@ -6,7 +6,7 @@ include { fastq_input; bam_input } from "./nevermore/workflows/input"
 include { collate_feature_counts } from "./gq_flow/modules/collate"
 
 include { run_gffquant } from "./gq_flow/modules/gffquant"
-include { minimap2_align; bwa_mem_align } from "./nevermore/modules/align/minimap2"
+include { minimap2_align; bwa_mem_align } from "./nevermore/modules/align/sam_align"
 
 
 if (params.input_dir && params.remote_input_dir) {

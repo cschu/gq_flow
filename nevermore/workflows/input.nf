@@ -43,14 +43,14 @@ process prepare_fastqs {
 		val(remote_input)
 	output:
 		path("fastq/*/*.fastq.gz"), emit: fastqs
-	script:
+
+  script:
 		def remote_option = (remote_input) ? "--remote-input" : ""
 		def remove_suffix = (params.suffix_pattern) ? "--remove-suffix ${params.suffix_pattern}" : ""
-		
 		"""
 		mkdir -p fastq/
 		prepare_fastqs.py -i . -o fastq/ ${remote_option} ${remove_suffix} > run.sh
-	     	"""
+   	"""
 }
 
 
@@ -93,9 +93,6 @@ workflow fastq_input {
 				return tuple(sample, file)
 			}.groupTuple(sort: true)
 			.map { classify_sample(it[0], it[1]) }
-		
-		fastq_ch.view()
-
 
 	emit:
 		fastqs = fastq_ch

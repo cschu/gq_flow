@@ -12,8 +12,6 @@ include { nevermore_align } from "./align"
 
 def do_preprocessing = (!params.skip_preprocessing || params.run_preprocessing)
 
-def config_dir = (projectDir.endsWith("nevermore")) ? "${projectDir}/config" : "${projectDir}/nevermore/config"
-
 
 workflow nevermore_main {
 

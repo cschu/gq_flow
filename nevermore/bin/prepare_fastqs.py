@@ -181,6 +181,7 @@ def main():
 	ap = argparse.ArgumentParser()
 	ap.add_argument("-i", "--input_dir", type=str, default=".")
 	ap.add_argument("-o", "--output_dir", type=str, default="prepared_samples")
+	ap.add_argument("-p", "--prefix", type=str, required=True)
 	ap.add_argument("--remote-input", action="store_true")
 	ap.add_argument("--remove-suffix", type=str, default=None)
 
@@ -205,8 +206,9 @@ def main():
 		full_f = pathlib.Path(os.path.join(args.input_dir, f))
 		if full_f.is_symlink():
 			link_target = full_f.resolve()
-			sample = os.path.basename(os.path.dirname(link_target))
-			if not sample:
+			sample, *fpath = str(link_target).replace(args.prefix, "").lstrip("/").split("/")
+
+			if not fpath:
 				raise NotImplementedError("Flat-directories not implemented.")
 			samples.setdefault(sample, []).append(full_f)
 

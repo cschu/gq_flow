@@ -8,7 +8,7 @@ include { bwa_mem_align } from "../modules/align/bwa"
 include { merge_and_sort } from "../modules/align/helpers"
 include { merge_single_fastqs } from "../modules/converters/merge_fastqs"
 
-def config_dir = (projectDir.endsWith("nevermore")) ? "${projectDir}/config" : "${projectDir}/nevermore/config"
+def asset_dir = "${projectDir}/nevermore/assets"
 
 
 workflow nevermore_align {
@@ -92,7 +92,7 @@ workflow nevermore_align {
 				.filter { it[0].merged == true || it[0].is_paired == true }
 				.map { sample, report -> return report }
 				.collect(),
-			"${config_dir}/multiqc.config",
+			"${asset_dir}/multiqc.config",
 			"qc"
 		)
 

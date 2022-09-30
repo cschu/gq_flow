@@ -94,7 +94,7 @@ workflow {
 		align_reads(fastq_ch)
 		alignment_ch = align_reads.out.alignments
 
-	} elif (bam_input_pattern) {
+	} else if (bam_input_pattern) {
 
 		bam_input(
 			Channel.fromPath(bam_input_pattern)

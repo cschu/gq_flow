@@ -9,8 +9,11 @@ process merge_single_fastqs {
 
     def fastq_in = ""
     def prefix = ""
-    if (fastqs instanceof Collection && files.size() == 2) {
+    def suffix = ""
+    if (fastqs instanceof Collection && fastqs.size() == 2) {
         prefix = "cat ${fastqs} |"
+        fastq_in = "stdin.fastq.gz"
+        suffix = " || { ec=\$?; [ \$ec -eq 141 ] && true || (exit \$ec); }"
     } else {
         fastq_in = "${fastqs[0]}"
     }
@@ -19,8 +22,7 @@ process merge_single_fastqs {
     set -e -o pipefail
     mkdir -p merged/
 
-    ${prefix} sortbyname.sh in=${fastq_in} out=merged/${sample.id}_R1.fastq.gz
+    ${prefix} sortbyname.sh in=${fastq_in} out=merged/${sample.id}_R1.fastq.gz ${suffix}
     """
-    // cat *.fastq.gz | sortbyname.sh in=stdin.gz out=merged/${sample.id}_R1.fastq.gz
-
+    // https://stackoverflow.com/questions/22464786/ignoring-bash-pipefail-for-error-code-141/72985727#72985727 
 }

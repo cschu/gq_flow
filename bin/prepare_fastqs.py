@@ -106,7 +106,7 @@ def process_sample(sample, fastqs, output_dir, remove_suffix=None, remote_input=
 			raise ValueError(f"sample: {sample} has mixed gz and uncompressed input files. Please check.")
 
 		# extract the file name prefixes
-		prefixes = [re.sub(r"\.(fastq|fq).gz$", "", os.path.basename(f.name)) for f in fastqs]
+		prefixes = [re.sub(r"\.(fastq|fq|txt).gz$", "", os.path.basename(f.name)) for f in fastqs]
 		if remove_suffix:
 			# remove suffix pattern if requested
 			prefixes = [re.sub(remove_suffix + r"$", "", p) for p in prefixes]
@@ -169,11 +169,11 @@ def is_fastq(f):
 
 	"""
 	prefix, suffix = os.path.splitext(f)
-	if suffix in (".fastq", ".fq"):
+	if suffix in (".fastq", ".fq", ".txt"):
 		return True
 	if suffix == ".gz":
 		_, suffix = os.path.splitext(prefix)
-		return suffix in (".fastq", ".fq")
+		return suffix in (".fastq", ".fq", ".txt")
 	return False
 
 

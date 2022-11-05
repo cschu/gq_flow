@@ -116,7 +116,7 @@ workflow {
 		.flatten()
 		.map { file ->
 			def category = file.name
-				.replaceAll(/\.txt$/, "")
+				.replaceAll(/\.txt\.gz$/, "")
 				.replaceAll(/.+\./, "")
 			return tuple(category, file)
 		}

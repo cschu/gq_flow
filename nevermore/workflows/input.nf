@@ -36,7 +36,6 @@ process transfer_bams {
 
 
 process prepare_fastqs {
-	publishDir params.output_dir, mode: "${params.publish_mode}"
 
 	input:
 		path(files)
@@ -48,11 +47,19 @@ process prepare_fastqs {
 		def remote_option = (remote_input) ? "--remote-input" : ""
 		def remove_suffix = (params.suffix_pattern) ? "--remove-suffix ${params.suffix_pattern}" : ""
 		def input_dir_prefix = (params.input_dir) ? params.input_dir : params.remote_input_dir
+
+		def custom_suffixes = (params.custom_fastq_file_suffixes) ? "--valid-fastq-suffixes ${params.custom_fastq_file_suffixes}" : ""
+		
 		"""
-		mkdir -p fastq/
-		prepare_fastqs.py -i . -o fastq/ -p ${input_dir_prefix} ${remote_option} ${remove_suffix} > run.sh
-   		"""
+		prepare_fastqs.py -i . -o fastq/ -p ${input_dir_prefix} ${custom_suffixes} ${remote_option} ${remove_suffix}
+		"""
+		// mkdir -p fastq/
 }
+
+
+
+
+
 
 
 workflow remote_fastq_input {

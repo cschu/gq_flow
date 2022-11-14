@@ -1,6 +1,5 @@
 process run_gffquant {
 	label "gffquant"
-	publishDir "${params.output_dir}", mode: params.publish_mode
 
 	input:
 	tuple val(sample), path(alignments)
@@ -8,6 +7,7 @@ process run_gffquant {
 
 	output:
 	tuple val(sample), path("${sample}/*.txt.gz"), emit: results
+	tuple val(sample), path("logs/${sample}.log")
 
 	script:
 	def gq_output = "-o ${sample}/${sample}"
@@ -54,34 +54,14 @@ process run_gffquant {
 	echo 'Copying database...'
 	cp -v ${gq_db} gq_db.sqlite3
 	${mk_aln_sam}
-	${gq_cmd} > logs/${sample}.o 2> logs/${sample}.e
-	rm -rfv gq_db.sqlite3 tmp/
+	${gq_cmd} &> logs/${sample}.log
+	rm -rfv gq_db.sqlite3* tmp/
 	"""
 }
 
-// process run_gffquant_old {
-// 	publishDir "${params.output_dir}", mode: params.publish_mode
-
-// 	input:
-// 	tuple val(sample), path(bam)
-// 	path(db)
-
-// 	output:
-// 	tuple val(sample), path("profiles/${sample}/*.txt.gz"), emit: results
-
-// 	script:
-// 	def emapper_version = (params.emapper_version) ? "--emapper_version ${params.emapper_version}" : ""
-// 	"""
-// 	echo $sample $bam
-// 	mkdir -p logs/
-// 	mkdir -p profiles/
-// 	gffquant ${db} ${bam} -o profiles/${sample}/${sample} ${params.gffquant_params} > logs/${sample}.o 2> logs/${sample}.e
-// 	"""
-// }
-
 
 process collate_feature_counts {
-	publishDir "${params.output_dir}", mode: params.publish_mode
+	// publishDir "${params.output_dir}", mode: params.publish_mode
 
 	input:
 	tuple val(sample), path(count_tables)

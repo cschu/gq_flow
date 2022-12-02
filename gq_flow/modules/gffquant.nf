@@ -1,6 +1,6 @@
 process run_gffquant {
 	label "gffquant"
-	publishDir "${params.output_dir}", mode: params.publish_mode
+	// publishDir "${params.output_dir}", mode: params.publish_mode
 
 	input:
 	tuple val(sample), path(alignments)
@@ -59,7 +59,7 @@ process run_gffquant {
 
 process run_gffquant_sam {
 	label "gffquant"
-	publishDir "${params.output_dir}", mode: params.publish_mode
+	// publishDir "${params.output_dir}", mode: params.publish_mode
 
 	input:
 	tuple val(sample), path(alignments)
@@ -95,7 +95,7 @@ process run_gffquant_sam {
 
 process run_gffquant_bam {
 	label "gffquant"
-	publishDir "${params.output_dir}", mode: params.publish_mode
+	// publishDir "${params.output_dir}", mode: params.publish_mode
 
 	input:
 	tuple val(sample), path(alignments)

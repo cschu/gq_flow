@@ -73,7 +73,7 @@ suffix_pattern = params.file_pattern.replaceAll(/\*\*/, "")
 
 
 process stream_minimap2_gffquant {
-	publishDir "${output_dir}", mode: params.publish_mode
+	//publishDir "${output_dir}", mode: params.publish_mode
 
 	input:
 	tuple val(sample), path(fastq)
@@ -99,7 +99,7 @@ process stream_minimap2_gffquant {
 
 
 process run_gffquant {
-	publishDir "${output_dir}", mode: params.publish_mode
+	// publishDir "${output_dir}", mode: params.publish_mode
 
 	input:
 	tuple val(sample), path(bam)
@@ -131,7 +131,7 @@ process run_gffquant {
 }
 
 process collate_feature_counts {
-	publishDir "${output_dir}", mode: params.publish_mode
+	// publishDir "${output_dir}", mode: params.publish_mode
 
 	input:
 	tuple val(sample), path(count_tables)

@@ -117,7 +117,6 @@ workflow {
 	feature_count_ch = run_gffquant.out.results
 		.map { sample, files -> return files }
 		.flatten()
-		.filter { !it.name.endsWith(".aln_stats.txt.gz") }
 		.filter { !it.name.endsWith("Counter.txt.gz") }
 		.map { file ->
 			def category = file.name

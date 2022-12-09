@@ -86,9 +86,12 @@ workflow {
 
 	if (params.minimap2_index || params.bwa_mem_index) {
 
+		// fastq_input(
+		// 	Channel.fromPath(fastq_input_pattern)
+		// )
 		fastq_input(
-			Channel.fromPath(fastq_input_pattern)
-		)
+			Channel.fromPath(input_dir + "/*", type: "dir")
+		)	
 		fastq_ch = fastq_input.out.fastqs
 
 		align_reads(fastq_ch)

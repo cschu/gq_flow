@@ -38,7 +38,7 @@ process run_gffquant {
 			mk_aln_sam += "cat ${sample}.sam > tmp/alignments.sam \n"
 			mk_aln_sam += "grep -v '^@' ${sample}.singles.sam >> tmp/alignments.sam"
 		} else {
-			mk_aln_sam += "ln -s ${alignments[0]} tmp/alignments.sam"
+			mk_aln_sam += "ln -s ../${alignments[0]} tmp/alignments.sam"
 		}
 		gq_cmd = "cat tmp/alignments.sam | ${gq_cmd} -"
 

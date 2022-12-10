@@ -126,6 +126,8 @@ workflow {
 		}
 		.groupTuple(sort: true)
 
+	feature_count_ch.view()
+
 	if (!params.no_collate) {
 		collate_feature_counts(feature_count_ch)
 	}

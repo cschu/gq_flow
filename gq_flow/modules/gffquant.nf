@@ -21,7 +21,7 @@ process run_gffquant {
 	gq_params += (params.gq_min_seqlen) ? (" --min_seqlen " + params.gq_min_seqlen) : ""
 	gq_params += (params.gq_min_identity) ? (" --min_identity " + params.gq_min_identity) : ""
 	gq_params += (params.bam_input_pattern) ? (" --format bam") : " --format sam"
-	gq_params += (!params.skip_dbfilter) ? "--import_readcounts \$(grep -o '[0-9]+' ${readcounts})" : ""
+	gq_params += (!params.skip_dbfilter) ? " --import_readcounts \$(grep -o '[0-9]+' ${readcounts})" : ""
 
 	def gq_cmd = "gffquant ${gq_output} ${gq_params} gq_db.sqlite3"
 	

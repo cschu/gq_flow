@@ -7,6 +7,7 @@ include { collate_feature_counts } from "./gq_flow/modules/collate"
 
 include { run_gffquant } from "./gq_flow/modules/gffquant"
 include { minimap2_align; bwa_mem_align } from "./nevermore/modules/align/sam_align"
+include { db_filter; db2bed3; readcount } from "./nevermore/modules/align/helpers"
 
 
 if (params.input_dir && params.remote_input_dir) {
@@ -108,6 +109,17 @@ workflow {
 			}
 			.groupTuple(sort: true)
 	}
+
+	readcount(alignment_ch)
+
+	if (!params.skip_dbfilter) {
+		db2bed3(params.gq_db)
+		db_filter(align_ch, db2bed3.out.db)
+		alignment_ch = db_filter.out.bam
+	}
+
+	alignment_ch = alignment_ch
+		.join(readcount.out.readcounts)
 
 	run_gffquant(
 		alignment_ch,

@@ -114,7 +114,7 @@ workflow {
 
 	if (!params.skip_dbfilter) {
 		db2bed3(params.gq_db)
-		db_filter(align_ch, db2bed3.out.db)
+		db_filter(alignment_ch, db2bed3.out.db)
 		alignment_ch = db_filter.out.bam
 	}
 

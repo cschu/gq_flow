@@ -60,7 +60,8 @@ process readcount {
     script:
     """
     set -e -o pipefail
-    samtools view ${sample}.bam | cut -f 1 | uniq | sort -u | wc -l > ${sample}.readcounts.txt
+    mkdir -p tmp/
+    samtools view ${sample}.bam | cut -f 1 | uniq | sort -u -T tmp/ | wc -l > ${sample}.readcounts.txt
     """
 }
 

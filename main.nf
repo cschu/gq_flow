@@ -110,12 +110,6 @@ workflow {
 
 	readcount(alignment_ch)
 
-	if (!params.skip_dbfilter) {
-		db2bed3(params.gq_db)
-		db_filter(alignment_ch, db2bed3.out.db)
-		alignment_ch = db_filter.out.bam
-	}
-
 	alignment_ch = alignment_ch
 		.join(readcount.out.readcounts)
 

@@ -3,9 +3,7 @@
 nextflow.enable.dsl=2
 
 include { fastq_input; bam_input } from "./nevermore/workflows/input"
-include { collate_feature_counts } from "./gq_flow/modules/collate"
-
-include { run_gffquant } from "./gq_flow/modules/gffquant"
+include { run_gffquant; collate_feature_counts } from "./nevemore/modules/profilers/gffquant"
 include { minimap2_align; bwa_mem_align } from "./nevermore/modules/align/sam_align"
 include { db_filter; db2bed3; readcount } from "./nevermore/modules/align/helpers"
 

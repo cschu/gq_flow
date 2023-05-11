@@ -15,7 +15,6 @@ process run_gffquant {
 	def gq_params = "-m ${params.gq_mode} --ambig_mode ${params.gq_ambig_mode}"
 	gq_params += (params.gq_strand_specific) ? " --strand_specific" : ""
 	gq_params += (params.gq_unmarked_orphans) ? " --unmarked_orphans" : ""
-	gq_params += (params.gq_calc_coverage) ? " --calc_coverage" : ""
 	gq_params += (params.gq_min_seqlen) ? (" --min_seqlen " + params.gq_min_seqlen) : ""
 	gq_params += (params.gq_min_identity) ? (" --min_identity " + params.gq_min_identity) : ""
 	gq_params += (params.bam_input_pattern) ? " --import_readcounts \$(grep -o '[0-9]\\+' ${readcounts})" : ""

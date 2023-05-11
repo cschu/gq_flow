@@ -1,6 +1,6 @@
 nextflow.enable.dsl=2
 
-include { classify_sample } from "../modules/functions"
+include { classify_sample; classify_sample_with_library_info } from "../modules/functions"
 
 
 if (!params.bam_input_pattern) {
@@ -8,6 +8,8 @@ if (!params.bam_input_pattern) {
 }
 
 def bam_suffix_pattern = params.bam_input_pattern.replaceAll(/\*/, "")
+
+def input_dir = (params.input_dir) ? params.input_dir : params.remote_input_dir
 
 
 process transfer_fastqs {
@@ -41,7 +43,8 @@ process prepare_fastqs {
 		path(files)
 		val(remote_input)
 	output:
-		path("fastq/*/*.fastq.gz"), emit: fastqs
+		path("fastq/*/*.fastq.{gz,bz2}"), emit: fastqs
+		path("sample_library_info.txt"), emit: library_info
 
   script:
 		def remote_option = (remote_input) ? "--remote-input" : ""
@@ -53,7 +56,6 @@ process prepare_fastqs {
 		"""
 		prepare_fastqs.py -i . -o fastq/ -p ${input_dir_prefix} ${custom_suffixes} ${remote_option} ${remove_suffix}
 		"""
-		// mkdir -p fastq/
 }
 
 
@@ -94,13 +96,32 @@ workflow fastq_input {
 	main:
 		prepare_fastqs(fastq_ch.collect(), (params.remote_input_dir != null || params.remote_input_dir))
 
+		library_info_ch = prepare_fastqs.out.library_info
+			.splitCsv(header:false, sep:'\t', strip:true)
+			.map { row -> 
+				return tuple(row[0], row[1])
+			}
+
 		fastq_ch = prepare_fastqs.out.fastqs
 			.flatten()
 			.map { file -> 
 				def sample = file.getParent().getName()
 				return tuple(sample, file)
-			}.groupTuple(sort: true)
-			.map { classify_sample(it[0], it[1]) }
+			}
+			.groupTuple(sort: true)
+			.join(library_info_ch, remainder: true)
+			.map { sample_id, files, library_is_paired ->
+				def meta = [:]
+				meta.id = sample_id
+				meta.is_paired = (files instanceof Collection && files.size() == 2)
+				meta.library = (library_is_paired == "1") ? "paired" : "single"
+				return tuple(meta, files)
+				// classify_sample_with_library_info(it[0], it[2], it[1]) 
+			}
+
+
+
+		fastq_ch.view()
 
 	emit:
 		fastqs = fastq_ch

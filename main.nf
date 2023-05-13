@@ -122,6 +122,7 @@ workflow {
 		.map { sample, files -> return files }
 		.flatten()
 		.filter { !it.name.endsWith("Counter.txt.gz") }
+		.filter { params.collate_gene_counts || !it.name.endsWith("gene_counts.txt.gz") }
 		.map { file ->
 			def category = file.name
 				.replaceAll(/\.txt\.gz$/, "")
@@ -129,6 +130,9 @@ workflow {
 			return tuple(category, file)
 		}
 		.groupTuple(sort: true)
+		.combine(
+			Channel.from(params.gq_collate_columns.split(","))
+		)
 
 	feature_count_ch.view()
 

@@ -108,10 +108,10 @@ workflow {
 			.groupTuple(sort: true)
 	}
 
-	readcount(alignment_ch)
+	// readcount(alignment_ch)
 
-	alignment_ch = alignment_ch
-		.join(readcount.out.readcounts)
+	// alignment_ch = alignment_ch
+	// 	.join(readcount.out.readcounts)
 
 	run_gffquant(
 		alignment_ch,

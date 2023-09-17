@@ -72,7 +72,7 @@ process run_gffquant {
 	if (params.bam_input_pattern) {
 
 		if (params.do_name_sort) {
-			gq_cmd = "samtools collate -@ ${task.cpus} -O ${alignments} tmp/collated_bam | ${gq_cmd} --sam -"
+			gq_cmd = "samtools collate -@ ${task.cpus} -O ${alignments} tmp/collated_bam | ${gq_cmd} --bam -"
 		} else {
 			gq_cmd = "${gq_cmd} --bam ${alignments}"
 		}

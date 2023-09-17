@@ -62,6 +62,9 @@ process run_gffquant {
 	gq_params += (params.gq_min_identity) ? (" --min_identity " + params.gq_min_identity) : ""
 	gq_params += (params.gq_restrict_metrics) ? " --restrict_metrics ${params.gq_restrict_metrics}" : ""
 	// gq_params += (params.bam_input_pattern || !params.large_reference) ? (" --format bam") : " --format sam"
+	if (params.gq_mode == "domain") {
+		gq_params += " --db_separator , --db_coordinates hmmer"
+	}
 
 	def gq_cmd = "gffquant ${gq_output} ${gq_params} --db gq_db.sqlite3"
 

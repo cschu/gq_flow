@@ -7,6 +7,8 @@ include { run_gffquant; collate_feature_counts } from "./nevermore/modules/profi
 include { minimap2_align; bwa_mem_align } from "./nevermore/modules/align/sam_align"
 include { db_filter; db2bed3; readcount } from "./nevermore/modules/align/helpers"
 
+params.gq_collate_columns = "uniq_scaled,combined_scaled"
+
 
 if (params.input_dir && params.remote_input_dir) {
 	log.info """

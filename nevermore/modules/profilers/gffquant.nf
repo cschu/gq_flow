@@ -64,7 +64,7 @@ process run_gffquant {
 	// gq_params += (params.bam_input_pattern || !params.large_reference) ? (" --format bam") : " --format sam"
 	if (params.gq_mode == "domain") {
 		// gq_params += " --db_separator , --db_coordinates hmmer"
-		gq_params += "--db_format hmmer"
+		gq_params += " --db_format hmmer"
 	}
 
 	def gq_cmd = "gffquant ${gq_output} ${gq_params} --db gq_db.sqlite3"
